@@ -21,7 +21,7 @@ class ProductsController extends Controller {
 			exit;
 		}
 
-		if (!$this->user->hasPermission('products_view')) {
+		if(!$this->user->hasPermission('products_view')) {
 			header("Location: ".BASE_URL);
 			exit;
 		}
@@ -52,15 +52,10 @@ class ProductsController extends Controller {
 
 		$this->arrayInfo['errorItems'] = array();
 
-		$products = new Products();
-
-		$this->arrayInfo['name'] = $products->getAll();
-
 		if(isset($_SESSION['formError']) && count($_SESSION['formError']) > 0) {
 			$this->arrayInfo['errorItems'] = $_SESSION['formError'];
 			unset($_SESSION['formError']);
 		}
-
 
 		$this->loadTemplate('products_add', $this->arrayInfo);
 	}
@@ -68,7 +63,6 @@ class ProductsController extends Controller {
 	public function add_action() {
 
 		if(!empty($_POST['name'])) {
-
 			$id_category = $_POST['id_category'];
 			$id_brand = $_POST['id_brand'];
 			$name = $_POST['name'];
@@ -76,64 +70,66 @@ class ProductsController extends Controller {
 			$stock = $_POST['stock'];
 			$price_from = $_POST['price_from'];
 			$price = $_POST['price'];
-
 			$weight = $_POST['weight'];
 			$width = $_POST['width'];
 			$height = $_POST['height'];
 			$length = $_POST['length'];
 			$diameter = $_POST['diameter'];
-
+			
 			$featured = (!empty($_POST['featured']))?1:0;
 			$sale = (!empty($_POST['sale']))?1:0;
 			$bestseller = (!empty($_POST['bestseller']))?1:0;
 			$new_product = (!empty($_POST['new_product']))?1:0;
-
+			
 			$options = $_POST['options'];
+
+			$images = (!empty($_FILES['images']))?$_FILES['images']:array();
 
 			if(!empty($id_category) && !empty($id_brand) && !empty($name) && !empty($stock) && !empty($price)) {
 
 				$products = new Products();
 
-					$products->addProduct(
-							$id_category, 
-							$id_brand, 
-							$name, 
-							$description, 
-							$stock, 
-							$price_from, 
-							$price, 
+				$products->add(
+					$id_category,
+					$id_brand,
+					$name,
+					$description,
+					$stock,
+					$price_from,
+					$price,
 
-							$weight, 
-							$width, 
-							$height, 
-							$length, 
-							$diameter, 
+					$weight,
+					$width,
+					$height,
+					$length,
+					$diameter,
 
-							$featured,
-							$sale, 
-							$bestseller, 
-							$new_product,
-							
-							$options
-						);
+					$featured,
+					$sale,
+					$bestseller,
+					$new_product,
+
+					$options,
+					$images
+				);
 
 			} else {
 				$_SESSION['formError'] = array('id_category', 'id_brand', 'name', 'stock', 'price');
 
-				header("Location: ".BASE_URL.'products/add');
+				header("Location: ".BASE_URL."products/add");
 				exit;
 			}
 
-			header("Location: ".BASE_URL.'products');
+			header("Location: ".BASE_URL."products");
 			exit;
 
 		} else {
-
 			$_SESSION['formError'] = array('name');
 
-			header("Location: ".BASE_URL.'products/add');
+			header("Location: ".BASE_URL."products/add");
 			exit;
 		}
+
 	}	
 /*
 	public function del($id) {

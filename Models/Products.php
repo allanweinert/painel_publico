@@ -29,27 +29,27 @@ class Products extends Model {
 			return $array;
 	}
 
-	public function addProduct(				
-					$id_category, 
-					$id_brand, 
-					$name, 
-					$description, 
-					$stock, 
-					$price_from, 
-					$price, 
+	public function add($id_category,
+					$id_brand,
+					$name,
+					$description,
+					$stock,
+					$price_from,
+					$price,
 
-					$weight, 
-					$width, 
-					$height, 
-					$length, 
-					$diameter, 
+					$weight,
+					$width,
+					$height,
+					$length,
+					$diameter,
 
 					$featured,
-					$sale, 
-					$bestseller, 
+					$sale,
+					$bestseller,
 					$new_product,
 					
-					$options) {
+					$options,
+					$images) {
 
 		if(!empty($id_category) && !empty($id_brand) && !empty($name) && !empty($stock) && !empty($price)) {
 
@@ -71,7 +71,7 @@ class Products extends Model {
 			$sql->bindValue(':description', $description);
 			$sql->bindValue(':stock', $stock);
 			$sql->bindValue(':price', $price);
-			$sql->bindValue(':price', $price_from); 
+			$sql->bindValue(':price_from', $price_from);
 			$sql->bindValue(':featured', $featured);
 			$sql->bindValue(':sale', $sale);
 			$sql->bindValue(':bestseller', $bestseller);
@@ -81,7 +81,7 @@ class Products extends Model {
 			$sql->bindValue(':width', $width);
 			$sql->bindValue(':height', $height);
 			$sql->bindValue(':length', $length);
-			$sql->bindValue(':diameter', $diameter);		
+			$sql->bindValue(':diameter', $diameter);
 			$sql->execute();
 
 			$id = $this->db->lastInsertId();
@@ -97,7 +97,99 @@ class Products extends Model {
 
 			}
 
+			$allowed_images = array(
+				'images/jpeg',
+				'images/jpg',
+				'images/png'
+			);
+
+			for($q=0;$q<count($images['name']);$q++) {
+				$tmp_name = $images['tmp_name'] [$q];
+				$type = $images['type'][$q];
+
+				if (in_array($type, $allowed_images)) {
+
+					$this->addProductImage( $id, $tmp_name, $type );
+
+					echo "<pre>";
+			print_r($img);
+			exit;
+			echo "</pre>";
+
+				}
+			}
 		}
+	}
+
+	public function addProductImage($id, $tmp_name, $type) {
+
+		switch ($type) {
+			case 'images/jpeg':
+			case 'images/jpg':
+				$o_img = imagecreatefromjpeg($tmp_name);
+				break;
+			
+			case 'images/png':
+				$o_img = imagecreatefrompng($tmp_name);
+				break;
+		}
+
+		if(!empty($o_img)) {
+
+			$width = 460;
+			$height = 400;
+			$o_ratio = $width / $heigth;
+
+			list($o_width, $o_heigth) = getimagesize($tmp_name);
+
+			$o_ratio = $o_width / $o_heigth;
+
+			if($ratio > $o_ratio) {
+				$img_w = $height * $o_ratio;
+				$img_h = $height;
+			} else {
+				$img_h = $width * $o_ratio;
+				$img_w = $width;
+			}
+
+			if($img_w < $width) {
+				$img_w = $width;
+				$img_h = $img_w / $o_ratio;
+			}
+			if($img_w < $width) {
+				$img_h = $height;
+				$img_w = $img_h / $o_ratio;
+			}
+
+			$px = 0;
+			$py = 0;
+
+			if($img_w > $width) {
+				$px = ($img_w - $width) / 2;
+			}
+			if($img_h > $height) {
+				$py = ($img_h - $height) / 2;
+			}
+
+			$img = imagecreatetruecolor($width, $height);
+			imagecopyresampled($img, $o_img, 0, 0, 0, 0, $img_w, $img_h, $o_width, $o_heigth);
+
+			$filename = md5(time().rand(0,999).rand(0,999)).'.jpg';
+
+			imagejpeg($img, '../loja/media/products/'.$filename);
+
+
+		$sql = "INSERT INTO products_images (id_product, url) VALUES (:id_product, :url)";
+			$sql = $this->db->prepare($sql);
+			$sql->bindValue(':id_product', $id);
+			$sql->bindValue(':url', $url);
+			$sql->execute();
+
+			
+			
+		}
+
+
 	}
 
 /*	public function del ($id) {
