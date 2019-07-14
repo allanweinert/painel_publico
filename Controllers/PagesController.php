@@ -155,7 +155,7 @@ class PagesController extends Controller {
 
 				$newname = md5(time().rand(0,999).rand(0,999)).'.jpg';
 
-				move_uploaded_file($_FILES['file']['tmp_name'], '../loja/media/pages/'.$newname);
+				move_uploaded_file($_FILES['file']['tmp_name'], PATH_SITE.'media/pages/'.$newname);
 
 				$array = array(
 					'location' => BASE_URL_SITE.'/media/pages/'.$newname

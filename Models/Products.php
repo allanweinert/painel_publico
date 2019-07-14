@@ -174,7 +174,7 @@ class Products extends Model {
 
 			$filename = md5(time().rand(0,999).rand(0,999)).'.jpg';
 
-			imagejpeg($img, '../loja/media/products/'.$filename);
+			imagejpeg($img, PATH_SITE.'media/products/'.$filename);
 
 			$sql = "INSERT INTO products_images (id_product, url) VALUES (:id_product, :url)";
 			$sql = $this->db->prepare($sql);
@@ -185,5 +185,5 @@ class Products extends Model {
 		}
 
 	}
-	
+
 }
