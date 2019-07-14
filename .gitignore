@@ -1,0 +1,8 @@
+AdminLTE-2.4.10/
+vendor/
+assets/adminlte
+.htaccess
+composer.json
+config.php
+environment.php
+ftpsync.settings
