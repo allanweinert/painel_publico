@@ -5,6 +5,34 @@ use \Core\Model;
 
 class Products extends Model {
 
+	public function get($id) {
+		$array = array();
+
+		$cat = new Categories();
+		$brands = new Brands();
+
+		$sql = "SELECT * FROM products WHERE id = :id";
+		$sql = $this->db->prepare($sql);
+		$sql->bindValue(':id', $id);
+		$sql->execute();
+
+		if($sql->rowCount() > 0) {
+			$array = $sql->fetch(\PDO::FETCH_ASSOC);
+
+			/*
+			$catInfo = $cat->get($array['id_category']);
+			$brandInfo = $brands->get($array['id_brand']);
+
+			$array['name_category'] = $catInfo['name'];
+			$array['name_brand'] = $brandInfo['name'];
+			*/
+
+		}
+
+		return $array;
+
+	}
+
 	public function getAll() {
 		$array = array();
 
