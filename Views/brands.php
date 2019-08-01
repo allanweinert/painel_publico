@@ -1,7 +1,7 @@
 <!-- Content Header (Page header) -->
     <section class="content-header">
       <h1>
-        Marcas
+       Administração de Marcas
       </h1>
     </section>
 

@@ -1,7 +1,7 @@
 <!-- Content Header (Page header) -->
     <section class="content-header">
       <h1>
-        Categorias
+        Administração de Categorias
       </h1>
     </section>
 

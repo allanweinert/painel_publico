@@ -7,6 +7,7 @@ use \Models\Brands;
 use \Models\Categories;
 use \Models\Products;
 use \Models\Options;
+use \Models\Rates;
 
 class ProductsController extends Controller {
 
@@ -48,10 +49,12 @@ class ProductsController extends Controller {
 			$brands = new Brands();
 			$options = new Options();
 			$products = new Products();
+			$rates = new Rates();
 
 			$this->arrayInfo['cat_list'] = $cat->getAll();
 			$this->arrayInfo['brands_list'] = $brands->getAll();
 			$this->arrayInfo['options_list'] = $options->getAll();
+
 
 			$this->arrayInfo['errorItems'] = array();
 
@@ -61,9 +64,89 @@ class ProductsController extends Controller {
 			}
 
 			$this->arrayInfo['info'] = $products->get($id);
+
+			$this->arrayInfo['rates'] = $rates->getRatesFromProduct($id);
  
 			$this->loadTemplate('products_edit', $this->arrayInfo);
 		}
+	}
+
+	public function edit_action() {
+
+		if(!empty($_POST['id'])) {
+			$id = $_POST['id'];
+			$id_category = $_POST['id_category'];
+			$id_brand = $_POST['id_brand'];
+			$name = $_POST['name'];
+			$description = $_POST['description'];
+			$stock = $_POST['stock'];
+			$price_from = $_POST['price_from'];
+			$price = $_POST['price'];
+			$weight = $_POST['weight'];
+			$width = $_POST['width'];
+			$height = $_POST['height'];
+			$length = $_POST['length'];
+			$diameter = $_POST['diameter'];
+			
+			$featured = (!empty($_POST['featured']))?1:0;
+			$sale = (!empty($_POST['sale']))?1:0;
+			$bestseller = (!empty($_POST['bestseller']))?1:0;
+			$new_product = (!empty($_POST['new_product']))?1:0;
+			
+			$options = $_POST['options'];
+
+			$c_images = (!empty($_POST['c_images']))?$_POST['c_images']:array();
+
+			$images = (!empty($_FILES['images']))?$_FILES['images']:array();
+
+			if(!empty($id) && !empty($id_category) && !empty($id_brand) && !empty($name) && !empty($stock) && !empty($price)) {
+
+				$products = new Products();
+
+				$products->update(
+					$id_category,
+					$id_brand,
+					$name,
+					$description,
+					$stock,
+					$price_from,
+					$price,
+
+					$weight,
+					$width,
+					$height,
+					$length,
+					$diameter,
+
+					$featured,
+					$sale,
+					$bestseller,
+					$new_product,
+
+					$options,
+					$images,
+					$c_images,
+
+					$id
+				);
+
+			} else {
+				$_SESSION['formError'] = array('id_category', 'id_brand', 'name', 'stock', 'price');
+
+				header("Location: ".BASE_URL."products/edit/".$id);
+				exit;
+			}
+
+			header("Location: ".BASE_URL."products");
+			exit;
+
+		} else {
+			$_SESSION['formError'] = array();
+
+			header("Location: ".BASE_URL."products");
+			exit;
+		}
+
 	}
 
 	public function add() {
@@ -155,59 +238,35 @@ class ProductsController extends Controller {
 			exit;
 		}
 
-	}	
-/*
+	}
+	
 	public function del($id) {
-		if(!empty($id)) {
-
+		
+		if (!empty($id)) {
+			
 			$products = new Products();
 			$products->del($id);
+
 		}
 
-		header("Location: ".BASE_URL.'products');
+		header("Location: ".BASE_URL."products");
 		exit;
 	}
 
-	public function edit($id) {
-		if(!empty($id)){
+	public function del_rate($id_rate) {
+		if (!empty($id_rate)) {
+			
+			$rates = new Rates();
+			$id_product = $rates->del($id_rate);
 
-			$brands = new Products();
-
-			$this->arrayInfo['info'] = $products->get($id);
-			$this->arrayInfo['errorItems'] = array();
-
-			if(isset($_SESSION['formError']) && count($_SESSION['formError']) > 0) {
-				$this->arrayInfo['errorItems'] = $_SESSION['formError'];
-				unset($_SESSION['formError']);
+			if($id_product > 0) {
+				header("Location: ".BASE_URL."products/edit/".$id_product);
+				exit;
 			}
 
-
-			$this->loadTemplate('products_edit', $this->arrayInfo);
-		} else {
-			header("Location: ".BASE_URL.'products');
-			exit;
 		}
+
+		header("Location: ".BASE_URL."products");
+		exit;
 	}
-
-	public function edit_action($id) {
-		if(!empty($id)) {
-
-			$brands = new Products();
-
-			if(!empty($_POST['name'])) {
-				$name = $_POST['name'];
-
-				$products->update($name, $id);
-				
-				header("Location: ".BASE_URL.'products');
-				exit;
-
-			} else {
-				$_SESSION['formError'] = array('name');
-
-				header("Location: ".BASE_URL.'products/edit/'.$id);
-				exit;
-			}
-		}
-	}*/
 }

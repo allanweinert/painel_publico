@@ -129,6 +129,14 @@ desired effect
         <?php if($viewData['user']->hasPermission('products_view')): ?>
         <li class="<?php echo ($viewData['menuActive']=='products')?'active':''; ?>"><a href="<?php echo BASE_URL; ?>products"><i class="fa fa-link"></i> <span>Produtos</span></a></li>
         <?php endif; ?>
+
+        <?php if($viewData['user']->hasPermission('users_view')): ?>
+        <li class="<?php echo ($viewData['menuActive']=='users')?'active':''; ?>"><a href="<?php echo BASE_URL; ?>users"><i class="fa fa-link"></i> <span>Usuários</span></a></li>
+        <?php endif; ?>
+
+        <?php if($viewData['user']->hasPermission('purchases_view')): ?>
+        <li class="<?php echo ($viewData['menuActive']=='purchases')?'active':''; ?>"><a href="<?php echo BASE_URL; ?>purchases"><i class="fa fa-link"></i> <span>Pedidos</span></a></li>
+        <?php endif; ?>
       </ul>
       <!-- /.sidebar-menu -->
     </section>

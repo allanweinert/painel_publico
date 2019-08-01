@@ -118,13 +118,24 @@
 				<?php foreach($options_list as $opitem): ?>
 				<div class="form-group">
 					<label for="p_option_<?php echo $opitem['id']; ?>"><?php echo $opitem['name']; ?></label><br/>
-					<input type="text" name="options[<?php echo $opitem['id']; ?>]" id="p_option_<?php echo $opitem['id']; ?>" class="form-control" />
+					<input type="text" name="options[<?php echo $opitem['id']; ?>]" id="p_option_<?php echo $opitem['id']; ?>" class="form-control" value="<?php echo (isset($info['options'][$opitem['id']]))?$info['options'][$opitem['id']]:''; ?>" />
 				</div>
 				<?php endforeach; ?>
 
 				<hr/>
 
 				<label>Imagens do Produto</label><br/>
+
+				<div class="images_area">
+					<?php foreach ($info['images'] as $id_image => $url): ?>
+						<div class="p_image">
+							<img src="<?php echo $url; ?>" /><br/>
+							<a href="javascript:;">[ deletar ]</a>
+
+							<input type="hidden" name="c_images[]" value="<?php echo $id_image; ?>" />
+						</div>
+					<?php endforeach; ?>	
+				</div>
 
 				<button class="p_new_image btn btn-primary">+</button>
 
@@ -137,6 +148,50 @@
 	</form>
 
 </section>
+
+
+<section class="content container-fluid">
+	<div class="box">
+		<div class="box-header">
+			<h3 class="box-title">Avaliações</h3>
+		</div>
+		<div class="box-body">
+			
+			<?php if(count($rates) > 0): ?>
+				
+				<table class="table">
+		          <tr>
+		            <th>Autor</th>
+		            <th>Data da avaliação</th>
+		            <th>Pontos</th>
+		            <th>Comentário</th>
+		            <th>Ações</th>
+		          </tr>
+
+		          <?php foreach ($rates as $rate): ?>
+		          	<tr>
+			            <td> <?php echo $rate['name']; ?> </td>
+			            <td> <?php echo date('d/m/Y', strtotime( $rate['date_rated'])); ?> </td>
+			            <td> <?php echo $rate['points']; ?> </td>
+			            <td> <?php echo $rate['comment']; ?> </td>
+			            <td>
+			            	<a href="<?php echo BASE_URL; ?>products/del_rate/<?php echo $rate['id']; ?>"> Excluir</a>
+			            </td>
+		          	</tr>
+		         <?php endforeach; ?> 
+
+		        </table>
+
+
+			<?php else: ?>
+				Este produto ainda não possui avaliações.
+			<?php endif; ?>
+		</div>
+	</div>
+</section>
+
+
+
 <!-- /.content -->
 <script src="https://cloud.tinymce.com/stable/tinymce.min.js?apiKey=eijpmc7sdy2yipxuifg9fvebqq3l49ius24593k4ou1i4f0d"></script>
 <script type="text/javascript">
